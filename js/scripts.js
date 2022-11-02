@@ -1,4 +1,44 @@
 $().ready(function () {
+  // $("#btn-group").click(function () {
+  //   var radios = document.getElementsByName("btnradio");
+
+  //   for (var i = 0; i < radios.length; i++) {
+  //     if (radios[i].checked) {
+  //       console.log(radios[i].value);
+  //       break;
+  //     }
+  //   }
+  // });
+
+  // aqui segun el nombre del objeto aqui le dare un accion al hacer click
+  const btn01 = document.querySelector("#btnradio1");
+  const btn02 = document.querySelector("#btnradio2");
+  const btn03 = document.querySelector("#watwiljedoen");
+  const btn05 = document.querySelector("#btnCompra");
+
+  btn05.onclick = () => {
+    var cases = document.getElementsByClassName("form-select");
+    let resultat = "";
+    for (var i = 0; i < cases.length; i++) {
+      resultat += cases[i].value + ",";
+    }
+    // console.log(resultat);
+    $("#Compra2").html("vous allez activer les planches " + resultat);
+  };
+
+  btn01.onclick = () => {
+    var radios = document.getElementsByName("btnradio");
+
+    for (var i = 0; i < radios.length; i++) {
+      if (radios[i].checked) {
+        console.log(radios[i].value);
+        // break;
+      }
+    }
+
+    // alert(js.value);
+  };
+
   //   $("#btnanswer").click(function () {
   //     console.log("hizo click222");
   //     var cases = document.getElementsByClassName("form-check-input");
@@ -27,21 +67,18 @@ $().ready(function () {
     //hide all extra lists
     //$('.hide').hide();
     //get current value
-    var value = $(this).val();
+    console.log(Object.values("#watwiljedoen"));
 
-    console.log(value);
-    var urlo =
-      "https://www.resto123.com/wp-content/plugins/Api_Techsysprogram/data/ws_table_ventas.php?idt=" +
-      value;
-    console.log(urlo);
+    var value = $(this).val();
     // window.location = url;
     $.ajax({
       type: "POST",
-      url: urlo,
+      url:
+        "https://www.resto123.com/wp-content/plugins/Api_Techsysprogram/data/ws_table_ventas.php?idt=" +
+        value,
       async: true,
       success: function (response) {
         // console.log(response);
-
         $("#Compra").html(response);
       },
     });
@@ -81,17 +118,6 @@ $().ready(function () {
   //   //console.log(resultat);
   //   $("#Gerer").html("vous allez activer les planches " + resultat);
   // });
-
-  $("#btnCompra").click(function () {
-    console.log("hizo click");
-    var cases = document.getElementsByClassName("form-select");
-    let resultat = "";
-    for (var i = 0; i < cases.length; i++) {
-      resultat += cases[i].value + ",";
-    }
-    console.log(resultat);
-    $("#Compra2").html("vous allez activer les planches " + resultat);
-  });
 
   //var checkboxes2 = document.getElementsByClassName("table table-hover");
 
