@@ -32,7 +32,7 @@ $().ready(function () {
     for (var i = 0; i < radios.length; i++) {
       if (radios[i].checked) {
         console.log(radios[i].value);
-        // break;
+        break; //sortir
       }
     }
 
@@ -67,21 +67,45 @@ $().ready(function () {
     //hide all extra lists
     //$('.hide').hide();
     //get current value
-    console.log(Object.values("#watwiljedoen"));
 
-    var value = $(this).val();
-    // window.location = url;
-    $.ajax({
-      type: "POST",
-      url:
-        "https://www.resto123.com/wp-content/plugins/Api_Techsysprogram/data/ws_table_ventas.php?idt=" +
-        value,
-      async: true,
-      success: function (response) {
-        // console.log(response);
-        $("#Compra").html(response);
-      },
-    });
+    var radios = document.getElementsByName("btnradio");
+
+    for (var i = 0; i < radios.length; i++) {
+      if (radios[i].checked) {
+        //console.log(radios[i].id);
+        var Radio_select = radios[i].id;
+        break; //sortir
+      }
+    }
+
+    //console.log(Radio_select);
+    var value = $(this).val(); //
+    if (Radio_select === "btnradio1") {
+      // window.location = url;
+      $.ajax({
+        type: "POST",
+        url:
+          "https://www.resto123.com/wp-content/plugins/Api_Techsysprogram/data/ws_table_ventas.php?idt=" +
+          value,
+        async: true,
+        success: function (response) {
+          // console.log(response);
+          $("#Compra").html(response);
+        },
+      });
+    } else if (Radio_select === "btnradio2") {
+      $.ajax({
+        type: "POST",
+        url:
+          "https://www.resto123.com/wp-content/plugins/Api_Techsysprogram/data/ws_table3.php?idt=" +
+          value,
+        async: true,
+        success: function (response) {
+          // console.log(response);
+          $("#Compra").html(response);
+        },
+      });
+    }
   });
 
   // fetch(url)
