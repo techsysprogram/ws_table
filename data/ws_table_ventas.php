@@ -10,8 +10,9 @@ $valueNom =  "hol";
 //         $IDTirage = "42";
 //     }
 // }
-
-$IDTirage =  $_GET['idt'];
+$IDO = explode(" ", $_GET['ido']);
+$ID_Org = $IDO[0]; //  $_GET['ido'];
+$IDTirage = $IDO[1]; //   $_GET['idt'];
 
 $data = <<<DATA
    { 
@@ -37,7 +38,7 @@ $data = "";
 
 $curl = curl_init();
 curl_setopt_array($curl, array(
-    CURLOPT_URL => 'http://boulier.techsysprogram.fr/TechAPI/TiragePlanches/9905/' . $IDTirage,
+    CURLOPT_URL => 'http://boulier.techsysprogram.fr/TechAPI/TiragePlanches/' . $ID_Org . '/' . $IDTirage,
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => '',
     CURLOPT_MAXREDIRS => 10,
@@ -89,15 +90,16 @@ foreach ($arr as $item) { //foreach element in $arr
         $html2 = $html2 . <<<FIN
                 <td>
                 <select class="form-select">
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-                <option>6</option>
-                <option>7</option>
-                <option>8</option>
-                <option>9</option>
+                <option value='$PlancheNom(0)'>0</option>
+                <option value='$PlancheNom(1)'>1</option>
+                <option value='$PlancheNom(2)'>2</option>
+                <option value='$PlancheNom(3)'>3</option>
+                <option value='$PlancheNom(4)'>4</option>
+                <option value='$PlancheNom(5)'>5</option>
+                <option value='$PlancheNom(6)'>6</option>
+                <option value='$PlancheNom(7)'>7</option>
+                <option value='$PlancheNom(8)'>8</option>
+                <option value='$PlancheNom(9)'>9</option>
                 </select>
                 </td>
                 FIN;

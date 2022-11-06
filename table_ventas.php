@@ -1,5 +1,9 @@
 <?php
-$ID_Org = 9905; // $_GET['ido'];
+
+$ID_Org =  $_GET['ido'];
+if (empty($ID_Org)) {
+    $ID_Org = 9900;
+}
 
 $curl = curl_init();
 curl_setopt_array($curl, array(
@@ -32,7 +36,7 @@ curl_close($curl);
     $Tirage = "";
     $code = 0;
 
-    $html2 = "<select class='form-select' name=watwiljedoen>";
+    $html2 = "<select class='form-select' name=watwiljedoen id=id_Select>";
 
     foreach ($arr as $item) { //foreach element in $arr
         $code = $item['nCode'];
@@ -56,10 +60,11 @@ curl_close($curl);
     <h1></h1>
 
 
-    <div id="Compra"></div>
+    <div id="tech_id_table"></div>
 
 
-    <button class="btn btn-primary" name="valider" id="btnCompra">Mettre au panier</button>
+    <button class="btn btn-primary" name="valider" id="btnEnregistrer">Enregistrer planches</button>
+    <button class="btn btn-primary" name="valider3" id="btnMostrar">mostrar Planches</button>
 
     <div id="Compra2"></div>
 </body>

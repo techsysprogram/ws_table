@@ -11,7 +11,9 @@ $valueNom =  "hol";
 //     }
 // }
 
-$IDTirage =  $_GET['idt'];
+$IDO = explode(" ", $_GET['ido']);
+$ID_Org = $IDO[0]; //  $_GET['ido'];
+$IDTirage = $IDO[1]; //   $_GET['idt'];
 
 $data = <<<DATA
    { 
@@ -37,7 +39,7 @@ $data = "";
 
 $curl = curl_init();
 curl_setopt_array($curl, array(
-    CURLOPT_URL => 'http://boulier.techsysprogram.fr/TechAPI/JoueurPlanche/9905/' . $IDTirage . '/techsysprogram@gmail.com',
+    CURLOPT_URL => 'http://boulier.techsysprogram.fr/TechAPI/JoueurPlanche/' . $ID_Org . "/" . $IDTirage . '/techsysprogram@gmail.com',
     CURLOPT_RETURNTRANSFER => true,
     CURLOPT_ENCODING => '',
     CURLOPT_MAXREDIRS => 10,
