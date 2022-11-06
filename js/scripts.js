@@ -1,23 +1,33 @@
 $().ready(function () {
   const btn01 = document.querySelector("#btnradio1");
   const btn02 = document.querySelector("#btnradio2");
+  // const tech_selection = document.querySelector("#id_Select");
   const btn03 = document.querySelector("#id_Select");
   const btn05 = document.querySelector("#btnEnregistrer");
   const btn07 = document.querySelector("#btnMostrar");
 
   // btn05.textContent = "hola";
+  //aqui lo que hago es mostrar la tabla segun donde este seleccionado mas a delante sera mas inteligente
+  Affiche_table(2);
 
   $("select[name=watwiljedoen]").change(function () {
     Affiche_table(Select_nuevo_activar());
+    // console.log(this.value);
   });
 
+  // $("select[name=tech_form-select0]").change(function () {
+  //   console.log(this.value);
+  // });
+
+  // tech_selection.change(function () {
+  //   console.log(tech_selection);
+  // });
+
   btn01.onclick = () => {
-    // tech_enregistrer();
     Affiche_table(1);
   };
 
   btn02.onclick = () => {
-    // tech_enregistrer();
     Affiche_table(2);
   };
 
@@ -96,8 +106,15 @@ $().ready(function () {
   }
 
   //fucnion para mostrar todas las planches seleccionadas
+
+  function tech_enregistrer2(x) {
+    console.log("guardando :  " + x);
+  }
+
   function tech_enregistrer() {
-    if (Select_nuevo_activar() == 1) {
+    console.log("guardando :  ");
+    var p_index = Select_nuevo_activar();
+    if (p_index == 1) {
       var cases = document.getElementsByClassName("form-select");
       let resultat = "";
       var str_test = "";
@@ -109,7 +126,8 @@ $().ready(function () {
       }
       window.localStorage.setItem("nuevo " + Tirage_actif(), resultat);
       return resultat;
-    } else if (Select_nuevo_activar() == 2) {
+      //else
+    } else if (p_index == 2) {
       var cases = document.getElementsByClassName("form-check-input");
       let resultat = "";
       for (var i = 0; i < cases.length; i++) {
@@ -190,7 +208,6 @@ $().ready(function () {
       default:
       // code block
     }
-    console.log("ya llene el contenido con el html correspondiente");
     // return p1 * p2;
   }
 });

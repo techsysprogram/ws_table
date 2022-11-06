@@ -93,8 +93,8 @@ foreach ($arr as $item) { //foreach element in $arr
     if (!$etat) {
         $html2 = $html2 . <<< FIN
             <th scope='row'>
-            <div class="form-check">
-            <input class="form-check-input" type="checkbox" name="check01" value=$Codebarre>
+            <div class="form-check" >
+            <input class="form-check-input" onchange="tech_enregistrer2()" type="checkbox" name="check01" value=$Codebarre>
             FIN;
     } else {
         $html2 = $html2 . "<th>";
@@ -112,7 +112,38 @@ foreach ($arr as $item) { //foreach element in $arr
     $html2 = $html2 . "</tr>";
 }
 
-$html2 = $html2 . "</tbody></table>";
+$html2 = $html2 . <<<FIN
+</tbody>
+</table>
+    <script>
+    
+    function tech_enregistrer2() {
+        var cases = document.getElementsByClassName("form-check-input");
+        let resultat = "";
+        for (var i = 0; i < cases.length; i++) {
+          if (cases[i].checked) {
+            resultat += cases[i].value + ",";
+          }
+        }
+
+        var parts = window.location.search.substr(1).split("&");
+        var my_GET = {};
+        for (var i = 0; i < parts.length; i++) {
+          var temp = parts[i].split("=");
+          my_GET[decodeURIComponent(temp[0])] = temp[1];
+        }
+        var tech_org = my_GET["ido"];
+        var cases = document.getElementsByClassName("form-select");
+
+        window.localStorage.setItem("activar " + tech_org + " " + cases[0].value, resultat);
+
+     }</script>
+
+<!--  <button class="btn btn-primary" name="valider" id="btnCompra">Mettre au panier</button>
+
+ <div id="Compra2"></div>-->
+ 
+FIN;
 
 echo $html2;
 ?>
