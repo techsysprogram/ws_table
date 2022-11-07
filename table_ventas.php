@@ -63,8 +63,8 @@ curl_close($curl);
     <div id="tech_id_table"></div>
 
 
-    <!-- <button class="btn btn-primary" name="valider" id="btnEnregistrer">Enregistrer planches</button>
-    <button class="btn btn-primary" name="valider3" id="btnMostrar">mostrar Planches</button> -->
+    <!-- <button class="btn btn-primary" name="valider" id="btnEnregistrer">Enregistrer planches</button>-->
+    <button class="btn btn-primary" name="valider3" id="btnStock">verificar stock</button>
 
     <div id="Compra2"></div>
 </body>

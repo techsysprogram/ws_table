@@ -2,8 +2,7 @@ $().ready(function () {
   const btn01 = document.querySelector("#btnradio1");
   const btn02 = document.querySelector("#btnradio2");
 
-  const btn05 = document.querySelector("#btnEnregistrer");
-  const btn07 = document.querySelector("#btnMostrar");
+  const btn05 = document.querySelector("#btnStock");
 
   // btn05.textContent = "hola";
   //aqui lo que hago es mostrar la tabla segun donde este seleccionado mas a delante sera mas inteligente
