@@ -36,7 +36,7 @@ curl_close($curl);
     $Tirage = "";
     $code = 0;
 
-    $html2 = "<select class='form-select' name=watwiljedoen id=id_Select>";
+    $html2 = "<select class='form-select' name=tech_select_tirage>";
 
     foreach ($arr as $item) { //foreach element in $arr
         $code = $item['nCode'];
@@ -63,8 +63,8 @@ curl_close($curl);
     <div id="tech_id_table"></div>
 
 
-    <button class="btn btn-primary" name="valider" id="btnEnregistrer">Enregistrer planches</button>
-    <button class="btn btn-primary" name="valider3" id="btnMostrar">mostrar Planches</button>
+    <!-- <button class="btn btn-primary" name="valider" id="btnEnregistrer">Enregistrer planches</button>
+    <button class="btn btn-primary" name="valider3" id="btnMostrar">mostrar Planches</button> -->
 
     <div id="Compra2"></div>
 </body>

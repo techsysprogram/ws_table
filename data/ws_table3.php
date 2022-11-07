@@ -122,7 +122,7 @@ $html2 = $html2 . <<<FIN
         let resultat = "";
         for (var i = 0; i < cases.length; i++) {
           if (cases[i].checked) {
-            resultat += cases[i].value + ",";
+            resultat += cases[i].value + ":";
           }
         }
 
@@ -132,10 +132,10 @@ $html2 = $html2 . <<<FIN
           var temp = parts[i].split("=");
           my_GET[decodeURIComponent(temp[0])] = temp[1];
         }
-        var tech_org = my_GET["ido"];
         var cases = document.getElementsByClassName("form-select");
-
-        window.localStorage.setItem("activar " + tech_org + " " + cases[0].value, resultat);
+        var tech_org ="activar " +  my_GET["ido"] + " " + cases[0].value;
+        window.localStorage.setItem(tech_org, resultat);        
+        $("#Compra2").html(resultat);
 
      }</script>
 

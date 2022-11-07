@@ -1,8 +1,7 @@
 $().ready(function () {
   const btn01 = document.querySelector("#btnradio1");
   const btn02 = document.querySelector("#btnradio2");
-  // const tech_selection = document.querySelector("#id_Select");
-  const btn03 = document.querySelector("#id_Select");
+
   const btn05 = document.querySelector("#btnEnregistrer");
   const btn07 = document.querySelector("#btnMostrar");
 
@@ -10,7 +9,7 @@ $().ready(function () {
   //aqui lo que hago es mostrar la tabla segun donde este seleccionado mas a delante sera mas inteligente
   Affiche_table(2);
 
-  $("select[name=watwiljedoen]").change(function () {
+  $("select[name=tech_select_tirage]").change(function () {
     Affiche_table(Select_nuevo_activar());
     // console.log(this.value);
   });
@@ -33,7 +32,7 @@ $().ready(function () {
 
   //seleccion de los tirages
   btn05.onclick = () => {
-    $("#Compra2").html("planches :" + tech_enregistrer());
+    // $("#Compra2").html("planches :" + tech_enregistrer());
   };
 
   //ensures the page is loaded before functions are executed.
@@ -68,7 +67,7 @@ $().ready(function () {
     if (Select_nuevo_activar() == 1) {
       //nuevo poner cantidad
       string_activar = window.localStorage.getItem("nuevo " + Tirage_actif());
-      var array_planches = string_activar.split(",");
+      var array_planches = string_activar.split(":");
       // console.log("estoy aqui en nuevo : " + array_planches);
       var s_cases = document.getElementsByClassName("form-select");
       var str_s_case = "";
@@ -84,7 +83,7 @@ $().ready(function () {
           )
         ) {
           s_cases[i].value = array_planches[i2];
-          resultat = resultat + array_planches[i2] + ",";
+          resultat = resultat + array_planches[i2] + ":";
           i2++;
         }
       }
@@ -97,7 +96,7 @@ $().ready(function () {
       for (var i = 0; i < s_cases.length; i++) {
         if (string_activar.includes(s_cases[i].value)) {
           s_cases[i].checked = true;
-          resultat = resultat + s_cases[i].value + ",";
+          resultat = resultat + s_cases[i].value + ":";
         }
       }
     }
@@ -107,38 +106,34 @@ $().ready(function () {
 
   //fucnion para mostrar todas las planches seleccionadas
 
-  function tech_enregistrer2(x) {
-    console.log("guardando :  " + x);
-  }
-
-  function tech_enregistrer() {
-    console.log("guardando :  ");
-    var p_index = Select_nuevo_activar();
-    if (p_index == 1) {
-      var cases = document.getElementsByClassName("form-select");
-      let resultat = "";
-      var str_test = "";
-      for (var i = 1; i < cases.length; i++) {
-        str_test = cases[i].value;
-        if (!str_test.includes("(0)")) {
-          resultat += cases[i].value + ",";
-        }
-      }
-      window.localStorage.setItem("nuevo " + Tirage_actif(), resultat);
-      return resultat;
-      //else
-    } else if (p_index == 2) {
-      var cases = document.getElementsByClassName("form-check-input");
-      let resultat = "";
-      for (var i = 0; i < cases.length; i++) {
-        if (cases[i].checked) {
-          resultat += cases[i].value + ",";
-        }
-      }
-      window.localStorage.setItem("activar " + Tirage_actif(), resultat);
-      return resultat;
-    }
-  }
+  // function tech_enregistrer() {
+  //   console.log("guardando :  ");
+  //   var p_index = Select_nuevo_activar();
+  //   if (p_index == 1) {
+  //     var cases = document.getElementsByClassName("form-select");
+  //     let resultat = "";
+  //     var str_test = "";
+  //     for (var i = 1; i < cases.length; i++) {
+  //       str_test = cases[i].value;
+  //       if (!str_test.includes("(0)")) {
+  //         resultat += cases[i].value + ",";
+  //       }
+  //     }
+  //     window.localStorage.setItem("nuevo " + Tirage_actif(), resultat);
+  //     return resultat;
+  //     //else
+  //   } else if (p_index == 2) {
+  //     var cases = document.getElementsByClassName("form-check-input");
+  //     let resultat = "";
+  //     for (var i = 0; i < cases.length; i++) {
+  //       if (cases[i].checked) {
+  //         resultat += cases[i].value + ",";
+  //       }
+  //     }
+  //     window.localStorage.setItem("activar " + Tirage_actif(), resultat);
+  //     return resultat;
+  //   }
+  // }
 
   // ici je donne l'id organisateur et id tirage actuel donde me encuentro
   function Tirage_actif() {
@@ -185,7 +180,7 @@ $().ready(function () {
           success: function (response) {
             // console.log(response);
             $("#tech_id_table").html(response);
-            $("#Compra2").html(`planches :${tech_mostrar()}`);
+            $("#Compra2").html(`${tech_mostrar()}`);
           },
         });
         break;
@@ -200,7 +195,7 @@ $().ready(function () {
           success: function (response) {
             // console.log(response);
             $("#tech_id_table").html(response);
-            $("#Compra2").html(`planches :${tech_mostrar()}`);
+            $("#Compra2").html(`${tech_mostrar()}`);
           },
         });
         break;

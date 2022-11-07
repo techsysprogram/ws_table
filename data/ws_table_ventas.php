@@ -119,7 +119,7 @@ $html2 = $html2 . <<<FIN
     for (var i = 1; i < cases.length; i++) {
       str_test = cases[i].value;
       if (!str_test.includes("(0)")) {
-        resultat += cases[i].value + ",";
+        resultat += cases[i].value + ":";
       }
     }
     <!--  console.log(resultat); -->
@@ -130,9 +130,9 @@ $html2 = $html2 . <<<FIN
       var temp = parts[i].split("=");
       my_GET[decodeURIComponent(temp[0])] = temp[1];
     }
-    var tech_org = my_GET["ido"];
-
-    window.localStorage.setItem("nuevo " + tech_org + " " + cases[0].value, resultat); 
+    var tech_org ="nuevo " +  my_GET["ido"] + " " + cases[0].value;
+    window.localStorage.setItem(tech_org, resultat); 
+    $("#Compra2").html(resultat);
 
      }</script>
 
