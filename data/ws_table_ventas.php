@@ -14,25 +14,6 @@ $IDO = explode(" ", $_GET['ido']);
 $ID_Org = $IDO[0]; //  $_GET['ido'];
 $IDTirage = $IDO[1]; //   $_GET['idt'];
 
-$data = <<<DATA
-   { 
-       "nIDJouer":0, 
-       "nIDJouerLoto":0, 
-       "sAdresse":"BUENOS AIRES 234 ", 
-       "sCNI":"", "nCodePostal":31004, 
-       "dDateNaissance":"0000-00-00", 
-       "seMail":"contact@techsysprogram.com", 
-       "sMobile":"33333333333", 
-       "sNom":"$valueNom", 
-       "sPrenom":"SAAAAAAUL", 
-       "sTelephone":"03436986700", 
-       "dhUltimoCambio":"2022-05-06T21:15:25.150", 
-       "sVille":"PARANA", 
-       "sMotDePasse":"2001Dolores", 
-       "bBorrado":false, 
-       "sPays":"" 
-   }
-   DATA;
 //    lo pongo vacio porque no es un PUT
 $data = "";
 
@@ -81,7 +62,7 @@ $PlancheNom = "";
 foreach ($arr as $item) { //foreach element in $arr
     $etat = $item['bEtat'];
     $Description = $item['sDescriptLong'];
-    $PlancheNom = $item['sDescription'] . " - " . $item['sType'];
+    $PlancheNom = $item['sType'] . " - " . $item['sFormat'];
     $Prix = $item['rPrix'] . " €";
     $html2 = $html2 . "<tr>";
     if ($etat) {

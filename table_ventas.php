@@ -2,7 +2,7 @@
 
 $ID_Org =  $_GET['ido'];
 if (empty($ID_Org)) {
-    $ID_Org = 9900;
+    $ID_Org = 9905;
 }
 
 $curl = curl_init();
@@ -27,8 +27,6 @@ curl_close($curl);
 ?>
 
 
-
-
 <body>
 
     <?php
@@ -40,7 +38,7 @@ curl_close($curl);
 
     foreach ($arr as $item) { //foreach element in $arr
         $code = $item['nCode'];
-        $Tirage = $item['dDateTirage'] . "  " . $item['sAlias'];
+        $Tirage = $item['dDateTirage'] . "  " . $item['sAlias'] . "   => " . $code;
         $html2 = $html2 . <<<FIN
             <option value='$code'>$Tirage</option>
         FIN;

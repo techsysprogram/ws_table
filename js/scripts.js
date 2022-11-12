@@ -1,8 +1,12 @@
 $().ready(function () {
+  const $url_ws =
+    "https://www.resto123.com/wp-content/plugins/Api_Techsysprogram/data";
   const btn01 = document.querySelector("#btnradio1");
   const btn02 = document.querySelector("#btnradio2");
 
   const btn05 = document.querySelector("#btnStock");
+
+  let Mi_IDO = ""; //aqui se guarda el id organisateur e id tirage para no pasar varias veces
 
   // btn05.textContent = "hola";
   //aqui lo que hago es mostrar la tabla segun donde este seleccionado mas a delante sera mas inteligente
@@ -31,7 +35,7 @@ $().ready(function () {
 
   //seleccion de los tirages
   btn05.onclick = () => {
-    // $("#Compra2").html("planches :" + tech_enregistrer());
+    Api_woocommerce(1);
   };
 
   //ensures the page is loaded before functions are executed.
@@ -58,14 +62,18 @@ $().ready(function () {
 
   //aqui muestro lo que se guarda en local
   function tech_mostrar() {
-    // console.log("termine ahora muestro");
     //mostrar las planches seleccionadas segun nueva compra o activar
     var string_activar = "";
     var resultat = "";
+    var lo = "";
+
+    if (Mi_IDO == "") {
+      Mi_IDO = Tirage_actif();
+    }
 
     if (Select_nuevo_activar() == 1) {
       //nuevo poner cantidad
-      string_activar = window.localStorage.getItem("nuevo " + Tirage_actif());
+      string_activar = window.localStorage.getItem("nuevo " + Mi_IDO);
       var array_planches = string_activar.split(":");
       // console.log("estoy aqui en nuevo : " + array_planches);
       var s_cases = document.getElementsByClassName("form-select");
@@ -74,21 +82,22 @@ $().ready(function () {
       var i2 = 0;
       for (var i = 1; i < s_cases.length; i++) {
         str_s_case = s_cases[i].value;
-        // console.log(str_s_case);
-        // console.log(str_s_case.substr(0, str_s_case.length - 3));
         if (
           string_activar.includes(
             str_s_case.substring(0, str_s_case.length - 3)
           )
         ) {
-          s_cases[i].value = array_planches[i2];
+          lo = array_planches[i2];
+          if (lo != "") {
+            s_cases[i].value = array_planches[i2];
+          }
           resultat = resultat + array_planches[i2] + ":";
           i2++;
         }
       }
     } else if (Select_nuevo_activar() == 2) {
       //check value
-      string_activar = window.localStorage.getItem("activar " + Tirage_actif());
+      string_activar = window.localStorage.getItem("activar " + Mi_IDO);
       // var array_planches = string_activar.split(",");
       // console.log("estoy aqui en activar : " + array_planches);
       var s_cases = document.getElementsByClassName("form-check-input");
@@ -103,39 +112,9 @@ $().ready(function () {
     return resultat;
   }
 
-  //fucnion para mostrar todas las planches seleccionadas
-
-  // function tech_enregistrer() {
-  //   console.log("guardando :  ");
-  //   var p_index = Select_nuevo_activar();
-  //   if (p_index == 1) {
-  //     var cases = document.getElementsByClassName("form-select");
-  //     let resultat = "";
-  //     var str_test = "";
-  //     for (var i = 1; i < cases.length; i++) {
-  //       str_test = cases[i].value;
-  //       if (!str_test.includes("(0)")) {
-  //         resultat += cases[i].value + ",";
-  //       }
-  //     }
-  //     window.localStorage.setItem("nuevo " + Tirage_actif(), resultat);
-  //     return resultat;
-  //     //else
-  //   } else if (p_index == 2) {
-  //     var cases = document.getElementsByClassName("form-check-input");
-  //     let resultat = "";
-  //     for (var i = 0; i < cases.length; i++) {
-  //       if (cases[i].checked) {
-  //         resultat += cases[i].value + ",";
-  //       }
-  //     }
-  //     window.localStorage.setItem("activar " + Tirage_actif(), resultat);
-  //     return resultat;
-  //   }
-  // }
-
   // ici je donne l'id organisateur et id tirage actuel donde me encuentro
   function Tirage_actif() {
+    console.log("pase aqui en tirage_actif");
     var parts = window.location.search.substr(1).split("&");
     var $_GET = {};
     for (var i = 0; i < parts.length; i++) {
@@ -143,7 +122,12 @@ $().ready(function () {
       $_GET[decodeURIComponent(temp[0])] = temp[1];
     }
     var tech_org = $_GET["ido"];
+    if (tech_org === undefined) {
+      tech_org = "9905";
+    }
     var cases = document.getElementsByClassName("form-select");
+    // console.log(tech_org + " " + cases[0].value);
+    // Mi_var = tech_org + " " + cases[0].value;
     return tech_org + " " + cases[0].value;
   }
 
@@ -167,14 +151,14 @@ $().ready(function () {
 
   // Function to compute the product of p1 and p2
   function Affiche_table(index) {
+    //con el selector es importante siempre actualizar sin importar que ya tiene dato
+    Mi_IDO = Tirage_actif();
     switch (index) {
       case 1:
         // window.location = url;
         $.ajax({
           type: "POST",
-          url:
-            "https://www.resto123.com/wp-content/plugins/Api_Techsysprogram/data/ws_table_ventas.php?ido=" +
-            Tirage_actif(),
+          url: $url_ws + "/ws_table_ventas.php?ido=" + Mi_IDO,
           async: true,
           success: function (response) {
             // console.log(response);
@@ -187,9 +171,7 @@ $().ready(function () {
       case 2:
         $.ajax({
           type: "POST",
-          url:
-            "https://www.resto123.com/wp-content/plugins/Api_Techsysprogram/data/ws_table3.php?ido=" +
-            Tirage_actif(),
+          url: $url_ws + "/ws_table_actif.php?ido=" + Mi_IDO,
           async: true,
           success: function (response) {
             // console.log(response);
@@ -202,6 +184,39 @@ $().ready(function () {
       default:
       // code block
     }
+  }
+
+  function Api_woocommerce(index) {
+    if (Mi_IDO == "") {
+      Mi_IDO = Tirage_actif();
+    }
+    switch (index) {
+      case 1:
+        // ici j'appel un webservice pour creer un nouveau produit;
+        $.ajax({
+          type: "POST",
+          url:
+            $url_ws +
+            "/ws_woocommerce.php?dp=" +
+            "productossss|" +
+            "esto es la description de mi producto|" +
+            Mi_IDO +
+            "|" +
+            "2.5|",
+          async: true,
+          success: function (response) {
+            // console.log(response);
+            $("#Compra2").html(response);
+          },
+        });
+        break;
+
+      case 2:
+
+      default:
+      // code block
+    }
+
     // return p1 * p2;
   }
 });
