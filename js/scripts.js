@@ -1,14 +1,15 @@
 $().ready(function () {
   const $url_ws =
     "https://www.resto123.com/wp-content/plugins/Api_Techsysprogram/data";
+  const $url_TechAPI = "http://boulier.techsysprogram.fr/TechAPI";
   const btn01 = document.querySelector("#btnradio1");
   const btn02 = document.querySelector("#btnradio2");
-
   const btn05 = document.querySelector("#btnStock");
+  const btn06 = document.querySelector("#btnWoo");
+  let var_json_control = "";
 
   let Mi_IDO = ""; //aqui se guarda el id organisateur e id tirage para no pasar varias veces
 
-  // btn05.textContent = "hola";
   //aqui lo que hago es mostrar la tabla segun donde este seleccionado mas a delante sera mas inteligente
   Affiche_table(2);
 
@@ -16,14 +17,6 @@ $().ready(function () {
     Affiche_table(Select_nuevo_activar());
     // console.log(this.value);
   });
-
-  // $("select[name=tech_form-select0]").change(function () {
-  //   console.log(this.value);
-  // });
-
-  // tech_selection.change(function () {
-  //   console.log(tech_selection);
-  // });
 
   btn01.onclick = () => {
     Affiche_table(1);
@@ -35,29 +28,12 @@ $().ready(function () {
 
   //seleccion de los tirages
   btn05.onclick = () => {
-    Api_woocommerce(1);
+    Verifier_stock();
   };
 
-  //ensures the page is loaded before functions are executed.
-  // window.onload = function () {}
-
-  // window.addEventListener(
-  //   "load",
-  //   function () {
-  //     alert("hello!");
-  //   },
-  //   false
-  // );
-
-  // window.ready(
-  //   "load",
-  //   function () {
-  //     alert("hello!");
-  //   }
-  // );
-
-  btn07.onclick = () => {
-    $("#Compra2").html("planches :" + tech_mostrar());
+  //seleccion de los tirages
+  btn06.onclick = () => {
+    Api_woocommerce(1);
   };
 
   //aqui muestro lo que se guarda en local
@@ -65,16 +41,20 @@ $().ready(function () {
     //mostrar las planches seleccionadas segun nueva compra o activar
     var string_activar = "";
     var resultat = "";
-    var lo = "";
+    var val_qte = "";
 
     if (Mi_IDO == "") {
-      Mi_IDO = Tirage_actif();
+      Mi_IDO = Tirage_actif(1);
     }
 
     if (Select_nuevo_activar() == 1) {
       //nuevo poner cantidad
       string_activar = window.localStorage.getItem("nuevo " + Mi_IDO);
-      var array_planches = string_activar.split(":");
+      if (string_activar == null) {
+        return "null";
+      }
+      // console.log("estoy aqui en en nuevo : " + string_activar);
+      var array_planches = string_activar.split(";");
       // console.log("estoy aqui en nuevo : " + array_planches);
       var s_cases = document.getElementsByClassName("form-select");
       var str_s_case = "";
@@ -82,24 +62,27 @@ $().ready(function () {
       var i2 = 0;
       for (var i = 1; i < s_cases.length; i++) {
         str_s_case = s_cases[i].value;
-        if (
-          string_activar.includes(
-            str_s_case.substring(0, str_s_case.length - 3)
-          )
-        ) {
-          lo = array_planches[i2];
-          if (lo != "") {
-            s_cases[i].value = array_planches[i2];
+        // console.log(str_s_case + " => " + str_s_case.substring(1));
+
+        if (string_activar.includes(str_s_case.substring(1))) {
+          val_qte = array_planches[i2];
+          if (val_qte != "") {
+            s_cases[i].value = val_qte;
           }
-          resultat = resultat + array_planches[i2] + ":";
           i2++;
         }
       }
+      // resultat = resultat.substring(0, resultat.length - 1);
+      resultat = string_activar;
+      var_json_control = resultat;
     } else if (Select_nuevo_activar() == 2) {
       //check value
       string_activar = window.localStorage.getItem("activar " + Mi_IDO);
+      if (string_activar == null) {
+        return "null";
+      }
       // var array_planches = string_activar.split(",");
-      // console.log("estoy aqui en activar : " + array_planches);
+      // console.log("estoy aqui en activar : " + string_activar);
       var s_cases = document.getElementsByClassName("form-check-input");
       for (var i = 0; i < s_cases.length; i++) {
         if (string_activar.includes(s_cases[i].value)) {
@@ -113,22 +96,23 @@ $().ready(function () {
   }
 
   // ici je donne l'id organisateur et id tirage actuel donde me encuentro
-  function Tirage_actif() {
-    console.log("pase aqui en tirage_actif");
-    var parts = window.location.search.substr(1).split("&");
-    var $_GET = {};
-    for (var i = 0; i < parts.length; i++) {
-      var temp = parts[i].split("=");
-      $_GET[decodeURIComponent(temp[0])] = temp[1];
-    }
-    var tech_org = $_GET["ido"];
-    if (tech_org === undefined) {
-      tech_org = "9905";
-    }
+  function Tirage_actif(ID_O) {
+    // console.log("pase aqui en tirage_actif");
     var cases = document.getElementsByClassName("form-select");
-    // console.log(tech_org + " " + cases[0].value);
-    // Mi_var = tech_org + " " + cases[0].value;
-    return tech_org + " " + cases[0].value;
+    //ID_O= 1 devuelvo los IdOrg - IDtirage
+    switch (ID_O) {
+      case 1:
+        var str_case = cases[0].value.split(" ").join("");
+        break;
+      case 2: //aqui te muestro el id organisateur
+        var str_case = cases[0].value.split(" ").join("");
+        cases = str_case.split("-");
+        str_case = cases[0];
+        break;
+      default:
+      // code block
+    }
+    return str_case;
   }
 
   function Select_nuevo_activar() {
@@ -152,7 +136,7 @@ $().ready(function () {
   // Function to compute the product of p1 and p2
   function Affiche_table(index) {
     //con el selector es importante siempre actualizar sin importar que ya tiene dato
-    Mi_IDO = Tirage_actif();
+    Mi_IDO = Tirage_actif(1);
     switch (index) {
       case 1:
         // window.location = url;
@@ -163,7 +147,7 @@ $().ready(function () {
           success: function (response) {
             // console.log(response);
             $("#tech_id_table").html(response);
-            $("#Compra2").html(`${tech_mostrar()}`);
+            $("#Compra2").html(tech_mostrar());
           },
         });
         break;
@@ -176,7 +160,7 @@ $().ready(function () {
           success: function (response) {
             // console.log(response);
             $("#tech_id_table").html(response);
-            $("#Compra2").html(`${tech_mostrar()}`);
+            $("#Compra2").html(tech_mostrar());
           },
         });
         break;
@@ -186,9 +170,30 @@ $().ready(function () {
     }
   }
 
+  // Function to compute the product of p1 and p2
+  function Verifier_stock() {
+    //con el selector es importante siempre actualizar sin importar que ya tiene dato
+    // console.log(Mi_IDO);
+    // return false;
+    // window.location = url;
+    $.ajax({
+      type: "POST",
+      url:
+        $url_ws +
+        "/ws_control_stockage.php?ido=" +
+        Tirage_actif(2) +
+        "&vjson=" +
+        var_json_control,
+      async: true,
+      success: function (response) {
+        $("#Compra2").html(response);
+      },
+    });
+  }
+
   function Api_woocommerce(index) {
     if (Mi_IDO == "") {
-      Mi_IDO = Tirage_actif();
+      Mi_IDO = Tirage_actif(1);
     }
     switch (index) {
       case 1:
@@ -220,124 +225,3 @@ $().ready(function () {
     // return p1 * p2;
   }
 });
-
-// $("#btn-group").click(function () {
-//   var radios = document.getElementsByName("btnradio");
-
-//   for (var i = 0; i < radios.length; i++) {
-//     if (radios[i].checked) {
-//       console.log(radios[i].value);
-//       break;
-//     }
-//   }
-// });
-
-// aqui segun el nombre del objeto aqui le dare un accion al hacer click
-// document.getElementById("carForm").onsubmit = store
-// document.getElementById("clearButton").onclick = clearStorage
-// document.getElementById("removeButton").onclick = removeItem
-// document.getElementById("retrieveButton").onclick = retrieveRecords
-
-// fetch(url)
-//   .then(function (response) {
-//     console.log(response.html);
-//   })
-//   .then(function (body) {
-//     console.log(body);
-//   });
-
-// let response = fetch(url);
-
-// console.log(response);
-
-// if (response.ok) {
-//   // if HTTP-status is 200-299
-//   // get the response body (the method explained below)
-//   console.log(response);
-// } else {
-//   alert("HTTP-Error: " + response.status);
-// }
-
-// $("#btnGerer").click(() => {
-//   console.log("hizo click");
-//   var cases = document.getElementsByClassName("form-check-input");
-//   var resultat = "";
-//   for (var i = 0; i < cases.length; i++) {
-//     if (cases[i].checked) {
-//       resultat += cases[i].value + ",";
-//     } else {
-//       //cases[i].checked = true;
-//     }
-//   }
-//   //console.log(resultat);
-//   $("#Gerer").html("vous allez activer les planches " + resultat);
-// });
-
-//var checkboxes2 = document.getElementsByClassName("table table-hover");
-
-// for (i = 0; checkboxes2.length; i++) {
-//   // boucle for //
-//   var checkboxes = checkboxes2[i];
-//   console.log(checkboxes);
-//   //aqui le digo de poner en check el control
-//   //checkboxes.checked = true;
-// }
-
-//console.log(checkboxes);
-//aqui le digo de poner en check el control
-//checkboxes.checked = true;
-
-// for (var i = 0; i < checkboxes.length; i++) {
-//   console.log(checkboxes);
-//   //if (checkboxes[i].checked) {
-//   console.log(checkboxes[i].checked);
-//   //}
-// }
-
-//exemple// me recupera solo el primer valeur que es imput
-// var elt = document.querySelector("input");
-// console.log(elt);
-
-// $("#flexCheckDefault").click(function () {
-//   $("#answer2").html("te vi hiscistes click aqui ojito 55555");
-//   console.log("hizo click en el checkk");
-// });
-
-// var selectValue =
-//   document.getElementById("id_Select").options[
-//     document.getElementById("id_Select").selectedIndex
-//   ].value;
-// select = document.getElementById("id_Select");
-// choice = select.selectedIndex;
-// valeur = select.options[choice].value;
-// texte = select.options[choice].text;
-// console.log(valeur);
-//   $("#btnanswer").click(function () {
-//     console.log("hizo click222");
-//     var cases = document.getElementsByClassName("form-check-input");
-//     var resultat = "";
-//     for (var i = 0; i < cases.length; i++) {
-//       if (cases[i].checked) {
-//         resultat += cases[i].value + ",";
-//       } else {
-//         //cases[i].checked = true;
-//       }
-//     }
-//     //console.log(resultat);
-//     $("#answer").html("vous allez activer les planches " + resultat);
-//   });
-
-// $("#selectId>option").click(function () {
-// $("select[name=watwiljedoen]").change(function () {
-//   // console.log("selectiono");
-//   window.location =
-//     "https://www.ma-conciergerie.techsysprogram.com/page-test?idt=" +
-//     this.value;
-//   // alert(this.value);
-// });
-
-// Get the size of the entire webpage
-// const pageWidth = document.documentElement.scrollWidth;
-// const pageHeight = document.documentElement.scrollHeight;
-
-// console.log(pageWidth);

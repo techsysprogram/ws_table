@@ -10,7 +10,7 @@ $valueNom =  "hol";
 //         $IDTirage = "42";
 //     }
 // }
-$IDO = explode(" ", $_GET['ido']);
+$IDO = explode("-", $_GET['ido']);
 $ID_Org = $IDO[0]; //  $_GET['ido'];
 $IDTirage = $IDO[1]; //   $_GET['idt'];
 
@@ -63,7 +63,8 @@ foreach ($arr as $item) { //foreach element in $arr
     $etat = $item['bEtat'];
     $Description = $item['sDescriptLong'];
     $PlancheNom = $item['sType'] . " - " . $item['sFormat'];
-    $Prix = $item['rPrix'] . " €";
+    $Planche_stock = "|" . $item['sType'] . "|" . $item['sFormat'] . "|";
+    $Prix = $item['sPrix'] . " €";
     $html2 = $html2 . "<tr>";
     if ($etat) {
         $html2 = $html2 . "<td><p>$PlancheNom</p><p>$Description</p></td>";
@@ -71,16 +72,16 @@ foreach ($arr as $item) { //foreach element in $arr
         $html2 = $html2 . <<<FIN
                 <td>
                 <select class="form-select" onchange="tech_enregistrer2()">
-                <option value='$PlancheNom(0)'>0</option>
-                <option value='$PlancheNom(1)'>1</option>
-                <option value='$PlancheNom(2)'>2</option>
-                <option value='$PlancheNom(3)'>3</option>
-                <option value='$PlancheNom(4)'>4</option>
-                <option value='$PlancheNom(5)'>5</option>
-                <option value='$PlancheNom(6)'>6</option>
-                <option value='$PlancheNom(7)'>7</option>
-                <option value='$PlancheNom(8)'>8</option>
-                <option value='$PlancheNom(9)'>9</option>
+                <option value='0$Planche_stock'>0</option>
+                <option value='1$Planche_stock'>1</option>
+                <option value='2$Planche_stock'>2</option>
+                <option value='3$Planche_stock'>3</option>
+                <option value='4$Planche_stock'>4</option>
+                <option value='5$Planche_stock'>5</option>
+                <option value='6$Planche_stock'>6</option>
+                <option value='7$Planche_stock'>7</option>
+                <option value='8$Planche_stock'>8</option>
+                <option value='9$Planche_stock'>9</option>
                 </select>
                 </td>
                 FIN;
@@ -99,19 +100,13 @@ $html2 = $html2 . <<<FIN
     var resultat = "";
     for (var i = 1; i < cases.length; i++) {
       str_test = cases[i].value;
-      if (!str_test.includes("(0)")) {
-        resultat += cases[i].value + ":";
+      if (!str_test.includes("0|")) {
+        resultat += cases[i].value + ";";
       }
     }
     <!--  console.log(resultat); -->
-    
-    var parts = window.location.search.substr(1).split("&");
-    var my_GET = {};
-    for (var i = 0; i < parts.length; i++) {
-      var temp = parts[i].split("=");
-      my_GET[decodeURIComponent(temp[0])] = temp[1];
-    }
-    var tech_org ="nuevo " +  my_GET["ido"] + " " + cases[0].value;
+
+    var tech_org ="nuevo " + cases[0].value.split(" ").join("");
     window.localStorage.setItem(tech_org, resultat); 
     $("#Compra2").html(resultat);
 

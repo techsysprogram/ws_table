@@ -37,7 +37,7 @@ curl_close($curl);
     $html2 = "<select class='form-select' name=tech_select_tirage>";
 
     foreach ($arr as $item) { //foreach element in $arr
-        $code = $item['nCode'];
+        $code = $item['sIDTirage'];
         $Tirage = $item['dDateTirage'] . "  " . $item['sAlias'] . "   => " . $code;
         $html2 = $html2 . <<<FIN
             <option value='$code'>$Tirage</option>
@@ -63,6 +63,8 @@ curl_close($curl);
 
     <!-- <button class="btn btn-primary" name="valider" id="btnEnregistrer">Enregistrer planches</button>-->
     <button class="btn btn-primary" name="valider3" id="btnStock">verificar stock</button>
+
+    <button class="btn btn-primary" id="btnWoo">woocommerce</button>
 
     <div id="Compra2"></div>
 </body>

@@ -24,25 +24,6 @@ $woocommerce = new Client(
 //////////////////////////////////////////////////////////// CREATE_PRODUCT
 ///ici je mes les donné seprados por espacio
 $IDO = explode("|", $_GET['dp']);
-// $producto = $IDO[0]; //  producto;
-// $descrip = $IDO[1]; //   description;
-// $prix = $IDO[2]; //   precio;
-// $otro = $IDO[3]; //   otro;
-
-// $i_dex = 0;
-// foreach ($IDO as $array) {
-//     echo "IDO[" . $i_dex . "] = " . $array, '<br>';
-//     $i_dex++;
-// }
-
-// die;
-
-
-// REST API Woocommerce
-// $SiteWeb = 'https://www.resto123.com';
-// $NewPost = $SiteWeb . '/wp-json/wc/v3/products';
-// $User = 'ck_9c01c8ab107657ed70121a0714a18d9862d3bf0d';
-// $Pass = 'cs_cb5ebcee1fee7cedbf61fc7b5b83ae41c9164353';
 
 $data = [
     'name' => $IDO[0],
@@ -52,7 +33,8 @@ $data = [
     'short_description' => $IDO[2],
     'regular_price' => $IDO[3],
     // 'sku' => $IDO[2],sku=UGS si se pone un valor unico y otro prodcto tiene el mismo nombre este no se guarda
-    'categories' => [['id' => 18], ['id' => 16]],
+    // 'categories' => [['id' => 18], ['id' => 16]],
+    'categories' => [["name" => "gategor"]],
     'slug' => 'idoooo2' //esto es lo que se verra en el url ojo si ya existe este creara un url indexado ex: ..-3
 ];
 
@@ -73,12 +55,9 @@ if (!$result) {
     print("✔ Productos actualizados correctamente \n");
 }
 
-
 // foreach ($data as $array) {
 //     echo $array, '<br>';
 // }
-
-
 
 // $data2 = [
 //     'name' => $producto, 'slug' => '<string>', 'date_created' => '<string>', 'date_created_gmt' => '<string>', 'type' => '["simple","simple"]',
@@ -94,32 +73,3 @@ if (!$result) {
 //     'tags' => '<string>', 'images' => '<string>',    'attributes' => '<string>', 'default_attributes' => '<string>',
 //     'menu_order' => '<string>', 'meta_data' => '<string>'
 // ];
-
-
-// foreach ($data as $array) {
-//     echo $array, '<br>';
-// }
-
-// die;
-
-// $curl = curl_init();
-// curl_setopt_array($curl, array(
-//     CURLOPT_URL => $NewPost,
-//     CURLOPT_RETURNTRANSFER => true,
-//     CURLOPT_ENCODING => '',
-//     CURLOPT_MAXREDIRS => 10,
-//     CURLOPT_TIMEOUT => 0,
-//     CURLOPT_FOLLOWLOCATION => true,
-//     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-//     CURLOPT_CUSTOMREQUEST => 'POST',
-//     CURLOPT_POSTFIELDS => $data,
-//     CURLOPT_HTTPHEADER => array(
-//         'Content-Type: multipart/form-data',
-//         'Authorization: Basic ' . base64_encode("$User:$Pass")
-//     ),
-// ));
-
-// $response = curl_exec($curl);
-// curl_close($curl);
-// //print_r($body = json_decode( $api_response['body']) );
-// echo $response;

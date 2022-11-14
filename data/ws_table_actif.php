@@ -11,7 +11,7 @@ $valueNom =  "hol";
 //     }
 // }
 
-$IDO = explode(" ", $_GET['ido']);
+$IDO = explode("-", $_GET['ido']);
 $ID_Org = $IDO[0]; //  $_GET['ido'];
 $IDTirage = $IDO[1]; //   $_GET['idt'];
 
@@ -125,15 +125,9 @@ $html2 = $html2 . <<<FIN
             resultat += cases[i].value + ":";
           }
         }
+        cases = document.getElementsByClassName("form-select");
+        var tech_org ="activar " +  cases[0].value.split(" ").join("");
 
-        var parts = window.location.search.substr(1).split("&");
-        var my_GET = {};
-        for (var i = 0; i < parts.length; i++) {
-          var temp = parts[i].split("=");
-          my_GET[decodeURIComponent(temp[0])] = temp[1];
-        }
-        var cases = document.getElementsByClassName("form-select");
-        var tech_org ="activar " +  my_GET["ido"] + " " + cases[0].value;
         window.localStorage.setItem(tech_org, resultat);        
         $("#Compra2").html(resultat);
 
