@@ -1,22 +1,55 @@
 <?php
-//$valueNom =  $('#pr_nom').val();
-$valueNom =  "hol";
 
-// $IDTirage = "42";
-
-// if ($_SERVER["REQUEST_METHOD"] == "POST") {
-//     $IDTirage = $_REQUEST('idt');
-//     if (empty($IDTirage)) {
-//         $IDTirage = "42";
-//     }
-// }
 $IDO = explode("-", $_GET['ido']);
 $ID_Org = $IDO[0]; //  $_GET['ido'];
-$IDTirage = $IDO[1]; //   $_GET['idt'];
-
+$IDTirage = $IDO[1]; //   $_GET['ido'];
+$str_stock = $IDO[2]; //   $_GET['ido'];
 //    lo pongo vacio porque no es un PUT
+$bRojo = false;
 $data = "";
+$tr_Rojo = "";
 
+if ($str_stock != "0") {
+    $curl = curl_init();
+    curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://boulier.techsysprogram.fr/TechAPI/StockVerifier/' . $ID_Org,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'GET',
+        CURLOPT_POSTFIELDS => $str_stock,
+        CURLOPT_HTTPHEADER => array(
+            'Token: Miguel',
+            'Content-Type: application/json'
+        ),
+    ));
+    $response = curl_exec($curl);
+    curl_close($curl);
+
+    $arr = json_decode($response, true);
+
+    //aqui con $response deberia poner una condicion para saber si el codigo es correcto
+    // {
+    //     "sType": "Chance",
+    //     "sFormat": "chanceee",
+    //     "nNombre": 5,
+    //     "sEtat": "OK"
+    // },
+
+    foreach ($arr as $item) { //foreach element in $arr
+        $etat = $item['sEtat'];
+        if ($etat != "OK") {
+            $bRojo = true;
+            $tr_Rojo = $tr_Rojo . "|" . $item['sType'] . "|" . $item['sFormat'] . "|;";
+        }
+    }
+}
+
+
+$response = "";
 $curl = curl_init();
 curl_setopt_array($curl, array(
     CURLOPT_URL => 'http://boulier.techsysprogram.fr/TechAPI/TiragePlanches/' . $ID_Org . '/' . $IDTirage,
@@ -33,7 +66,6 @@ curl_setopt_array($curl, array(
         'Token: Miguel'
     ),
 ));
-$response = "";
 $response = curl_exec($curl);
 curl_close($curl);
 ?>
@@ -65,7 +97,23 @@ foreach ($arr as $item) { //foreach element in $arr
     $PlancheNom = $item['sType'] . " - " . $item['sFormat'];
     $Planche_stock = "|" . $item['sType'] . "|" . $item['sFormat'] . "|";
     $Prix = $item['sPrix'] . " €";
-    $html2 = $html2 . "<tr>";
+
+
+    // if ($bRojo) {
+    //     echo $tr_Rojo . '<br>' . $Planche_stock;
+    //     die;
+    // }
+
+
+    if (strpos($tr_Rojo, $Planche_stock) !== false) {
+        $html2 = $html2 . "<tr class='table-warning'>";
+    } else {
+        $html2 = $html2 . "<tr>";
+    }
+
+
+    // $html2 = $html2 . strpos('PHP is cool', 'cool') ? "<tr class='table-warning'>" : "<tr>";
+
     if ($etat) {
         $html2 = $html2 . "<td><p>$PlancheNom</p><p>$Description</p></td>";
         $html2 = $html2 . "<td>$Prix</td>";
@@ -108,7 +156,7 @@ $html2 = $html2 . <<<FIN
 
     var tech_org ="nuevo " + cases[0].value.split(" ").join("");
     window.localStorage.setItem(tech_org, resultat); 
-    $("#Compra2").html(resultat);
+    <!-- $("#Compra2").html(resultat); -->
 
      }</script>
 
@@ -117,5 +165,22 @@ $html2 = $html2 . <<<FIN
  <div id="Compra2"></div>-->
  
 FIN;
+
+
+if ($bRojo == false and $str_stock != "0") {
+    // {
+    //     "sType": "Chance",
+    //     "sFormat": "chanceee",
+    //     "nNombre": 5,
+    //     "sEtat": "OK"
+    // },
+
+    foreach ($arr as $item) { //foreach element in $arr
+        $str_woo = $item['sType'] . ' - ' . $item['sFormat'] . '<br>';
+        $html2 = $html2 . $str_woo;
+    }
+}
+
 echo $html2;
+
 ?>

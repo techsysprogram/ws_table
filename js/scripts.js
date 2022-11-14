@@ -37,7 +37,7 @@ $().ready(function () {
   };
 
   //aqui muestro lo que se guarda en local
-  function tech_mostrar() {
+  function tech_mostrar(index) {
     //mostrar las planches seleccionadas segun nueva compra o activar
     var string_activar = "";
     var resultat = "";
@@ -47,7 +47,7 @@ $().ready(function () {
       Mi_IDO = Tirage_actif(1);
     }
 
-    if (Select_nuevo_activar() == 1) {
+    if (index == 1) {
       //nuevo poner cantidad
       string_activar = window.localStorage.getItem("nuevo " + Mi_IDO);
       if (string_activar == null) {
@@ -74,8 +74,7 @@ $().ready(function () {
       }
       // resultat = resultat.substring(0, resultat.length - 1);
       resultat = string_activar;
-      var_json_control = resultat;
-    } else if (Select_nuevo_activar() == 2) {
+    } else if (index == 2) {
       //check value
       string_activar = window.localStorage.getItem("activar " + Mi_IDO);
       if (string_activar == null) {
@@ -142,12 +141,12 @@ $().ready(function () {
         // window.location = url;
         $.ajax({
           type: "POST",
-          url: $url_ws + "/ws_table_ventas.php?ido=" + Mi_IDO,
+          url: $url_ws + "/ws_table_ventas.php?ido=" + Mi_IDO + "-0",
           async: true,
           success: function (response) {
             // console.log(response);
             $("#tech_id_table").html(response);
-            $("#Compra2").html(tech_mostrar());
+            $("#Compra2").html(tech_mostrar(1));
           },
         });
         break;
@@ -160,7 +159,7 @@ $().ready(function () {
           success: function (response) {
             // console.log(response);
             $("#tech_id_table").html(response);
-            $("#Compra2").html(tech_mostrar());
+            $("#Compra2").html(tech_mostrar(2));
           },
         });
         break;
@@ -176,19 +175,26 @@ $().ready(function () {
     // console.log(Mi_IDO);
     // return false;
     // window.location = url;
-    $.ajax({
-      type: "POST",
-      url:
-        $url_ws +
-        "/ws_control_stockage.php?ido=" +
-        Tirage_actif(2) +
-        "&vjson=" +
-        var_json_control,
-      async: true,
-      success: function (response) {
-        $("#Compra2").html(response);
-      },
-    });
+
+    if (Select_nuevo_activar() == 1) {
+      var_json_control = tech_mostrar(1);
+
+      $.ajax({
+        type: "POST",
+        url:
+          $url_ws +
+          "/ws_table_ventas.php?ido=" +
+          Mi_IDO +
+          "-" +
+          var_json_control,
+        async: true,
+        success: function (response) {
+          // console.log(response);
+          $("#tech_id_table").html(response);
+          $("#Compra2").html(tech_mostrar(1)); //no lo quites es importante o solo llama tech_mostrar(1)
+        },
+      });
+    }
   }
 
   function Api_woocommerce(index) {
