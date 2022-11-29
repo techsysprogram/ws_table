@@ -7,6 +7,7 @@ $().ready(function () {
   const btn05 = document.querySelector("#btnStock");
   const btn06 = document.querySelector("#btnWoo");
   let var_json_control = "";
+  let var_titulo = "";
 
   let Mi_IDO = ""; //aqui se guarda el id organisateur e id tirage para no pasar varias veces
 
@@ -41,7 +42,7 @@ $().ready(function () {
     //mostrar las planches seleccionadas segun nueva compra o activar
     var string_activar = "";
     var resultat = "";
-    var val_qte = "";
+    // var val_qte = "";
 
     if (Mi_IDO == "") {
       Mi_IDO = Tirage_actif(1);
@@ -65,10 +66,8 @@ $().ready(function () {
         // console.log(str_s_case + " => " + str_s_case.substring(1));
 
         if (string_activar.includes(str_s_case.substring(1))) {
-          val_qte = array_planches[i2];
-          if (val_qte != "") {
-            s_cases[i].value = val_qte;
-          }
+          // val_qte = array_planches[i2];
+          s_cases[i].value = array_planches[i2];
           i2++;
         }
       }
@@ -86,9 +85,15 @@ $().ready(function () {
       for (var i = 0; i < s_cases.length; i++) {
         if (string_activar.includes(s_cases[i].value)) {
           s_cases[i].checked = true;
-          resultat = resultat + s_cases[i].value + ":";
+          resultat = resultat + s_cases[i].value + ";";
         }
       }
+    } else if (index == 3) {
+      string_activar = window.localStorage.getItem("nuevo " + Mi_IDO);
+      resultat = string_activar;
+    } else if (index == 4) {
+      string_activar = window.localStorage.getItem("activar " + Mi_IDO);
+      resultat = string_activar;
     }
 
     return resultat;
@@ -111,6 +116,10 @@ $().ready(function () {
       default:
       // code block
     }
+    // var selected = cases[0].find("option:selected");
+
+    var_titulo = cases[0][cases[0].selectedIndex].text;
+
     return str_case;
   }
 
@@ -141,7 +150,8 @@ $().ready(function () {
         // window.location = url;
         $.ajax({
           type: "POST",
-          url: $url_ws + "/ws_table_ventas.php?ido=" + Mi_IDO + "-0",
+          url:
+            $url_ws + "/ws_table_ventas.php?ido=" + Mi_IDO + "-0-0-0&titre=0",
           async: true,
           success: function (response) {
             // console.log(response);
@@ -154,7 +164,7 @@ $().ready(function () {
       case 2:
         $.ajax({
           type: "POST",
-          url: $url_ws + "/ws_table_actif.php?ido=" + Mi_IDO,
+          url: $url_ws + "/ws_table_actif.php?ido=" + Mi_IDO + "-0-0-0&titre=0",
           async: true,
           success: function (response) {
             // console.log(response);
@@ -175,10 +185,9 @@ $().ready(function () {
     // console.log(Mi_IDO);
     // return false;
     // window.location = url;
-
+    // console.log(tech_mostrar(4));
     if (Select_nuevo_activar() == 1) {
-      var_json_control = tech_mostrar(1);
-
+      // nuevo
       $.ajax({
         type: "POST",
         url:
@@ -186,12 +195,37 @@ $().ready(function () {
           "/ws_table_ventas.php?ido=" +
           Mi_IDO +
           "-" +
-          var_json_control,
+          tech_mostrar(3) +
+          "-" +
+          tech_mostrar(4) +
+          "&titre=" +
+          var_titulo,
         async: true,
         success: function (response) {
           // console.log(response);
           $("#tech_id_table").html(response);
           $("#Compra2").html(tech_mostrar(1)); //no lo quites es importante o solo llama tech_mostrar(1)
+        },
+      });
+    } else if (Select_nuevo_activar() == 2) {
+      //activar
+      $.ajax({
+        type: "POST",
+        url:
+          $url_ws +
+          "/ws_table_actif.php?ido=" +
+          Mi_IDO +
+          "-" +
+          tech_mostrar(3) +
+          "-" +
+          tech_mostrar(4) +
+          "&titre=" +
+          var_titulo,
+        async: true,
+        success: function (response) {
+          // console.log(response);
+          $("#tech_id_table").html(response);
+          $("#Compra2").html(tech_mostrar(2)); //no lo quites es importante o solo llama tech_mostrar(1)
         },
       });
     }

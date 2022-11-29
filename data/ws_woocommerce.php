@@ -73,3 +73,50 @@ if (!$result) {
 //     'tags' => '<string>', 'images' => '<string>',    'attributes' => '<string>', 'default_attributes' => '<string>',
 //     'menu_order' => '<string>', 'meta_data' => '<string>'
 // ];
+
+// Ajouter un produit automatiquement
+
+$woocommerce->post('products', $data);
+
+
+add_action('init', 'add_product_to_cart');
+function add_product_to_cart()
+{
+    if (!is_admin()) {
+        global $woocommerce;
+        $product_id = 22;
+        $found = false;
+        //On vérifie si il y a déja un produit dans le panier
+        if (sizeof($woocommerce->cart->get_cart()) > 0) {
+            foreach ($woocommerce->cart->get_cart() as $cart_item_key => $values) {
+                $_product = $values['data'];
+                if ($_product->id == $product_id) $found = true;
+            }
+            if (!$found) $woocommerce->cart->add_to_cart($product_id);
+        } else {
+            $woocommerce->cart->add_to_cart($product_id);
+        }
+    }
+}
+
+
+<?php
+function MY_add_to_cart_action()
+{
+	if ( ! empty( $_REQUEST['multiple-add-to-cart'] ) ) {
+		$my_products = explode( '-', $_REQUEST['multiple-add-to-cart'] ) ; 
+		foreach ( $my_products as $my_product )
+		{
+			$product    = wc_get_product( $my_product );
+			if ( $product && $product->is_purchasable() )
+			{
+				WC()->cart->add_to_cart( $product->id, 1 ) ;
+			}
+		}
+		wp_redirect( 'panier' );
+		exit;
+	}
+}
+add_action( 'wp_loaded', 'MY_add_to_cart_action', 20 );
+
+https://www.resto123.com/boutique/?add-to-cart=298&&quantity=2
